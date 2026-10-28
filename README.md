@@ -10,6 +10,11 @@ arena before the clock expires, dodge the shards, grab salvage, and keep moving.
 Built with React, TypeScript, Vite, HTML5 Canvas 2D and procedural Web Audio. No backend,
 no accounts, no API keys and no downloaded art or audio assets.
 
+[![Play POPBOUND live on GitHub Pages](https://img.shields.io/badge/PLAY_LIVE-GitHub_Pages-68f6dd?style=for-the-badge)](https://hassanabni.github.io/popbound-orb-chaos/)
+[![Deploy to GitHub Pages](https://github.com/hassanabni/popbound-orb-chaos/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/hassanabni/popbound-orb-chaos/actions/workflows/deploy-pages.yml)
+
+**Live game:** <https://hassanabni.github.io/popbound-orb-chaos/>
+
 ![POPBOUND main menu](docs/menu.jpg)
 
 ## What's in the game
@@ -49,7 +54,24 @@ no accounts, no API keys and no downloaded art or audio assets.
 | --- | --- |
 | ![Campaign complete](docs/campaign-complete.jpg) | ![Mobile landscape](docs/mobile-landscape.jpg) |
 
-## Quick start
+## Play it live
+
+The current build is hosted on **GitHub Pages**:
+
+### <https://hassanabni.github.io/popbound-orb-chaos/>
+
+No install is needed to play. Progress, settings and key bindings are stored in that browser's
+localStorage; clearing site data or playing on another browser starts a fresh local save.
+
+Deployment is automatic. Every push to `main` runs the automated tests, builds the production
+bundle and publishes `dist/` through GitHub Actions. The workflow is in
+[`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). To redeploy manually,
+open **Actions → Deploy to GitHub Pages → Run workflow** in the repository.
+
+The production build uses relative asset paths (`base: './'`), so the same `dist/` works from the
+GitHub Pages project subpath or from any static host without server-side routing.
+
+## Quick start (local)
 
 Requires **Node.js 20.19 or newer** (Node 22 LTS recommended).
 
@@ -82,8 +104,8 @@ npm run typecheck
 The project includes a local npm cache configuration in `.npmrc`, so installs do not depend on the
 state of a machine-wide npm cache. `.npm-cache/`, `node_modules/` and `dist/` are gitignored.
 
-The production build uses relative asset paths (`base: './'`), so `dist/` can be served from a
-subdirectory or any static host.
+The same commands are used by GitHub Actions in the Pages deployment pipeline (`npm ci`,
+`npm test`, `npm run build`).
 
 ## Controls
 
@@ -233,6 +255,8 @@ tests/
   bot.test.ts             Deterministic full 24-level campaign completion run
 scripts/                  Optional Playwright QA harnesses (desktop, mobile, fullscreen)
 docs/                     README screenshots
+.github/workflows/
+  deploy-pages.yml        Test, build and deploy the playable build to GitHub Pages
 ```
 
 ### Engine architecture
@@ -268,7 +292,8 @@ Every load is validated and clamped; missing/corrupt/outdated data falls back to
 Progress resets are available in **Settings → Local save → Reset progress** and preserve audio,
 accessibility and key-binding preferences.
 
-Clearing browser storage resets the game to a fresh save.
+Clearing browser storage resets the game to a fresh save. On GitHub Pages, the live build uses the
+same local save model, so each visitor gets their own independent progress on that device.
 
 ## Testing and verification
 
@@ -294,7 +319,11 @@ accelerated stepping and the game's own retry/restart rules, but does not remove
 alter scores or skip levels. On the committed test run it reached **CAMPAIGN_COMPLETE** with all 24
 arenas cleared, finishing at level 24 with a final score of **75,170** and logging its retries.
 
-Browser QA was also run with Playwright against the Vite development server:
+The GitHub Pages workflow runs the complete Vitest suite and production build on every push, so a
+failing test or build cannot be published.
+
+Browser QA was also run with Playwright against the Vite development server and the deployed
+production build:
 
 - Desktop at 1440×900: all navigation screens, natural keyboard movement/fire/weapon switching,
   pause freeze, pause→settings, level clear, the full 24-level campaign flow to victory, timed-out
@@ -304,6 +333,8 @@ Browser QA was also run with Playwright against the Vite development server:
   weapon cycle, pause, responsive HUD, portrait rotate hint and settings overlay. Touch controls
   occupy the side gutters on the tested landscape viewport rather than covering the arena.
 - Fullscreen API activation was verified in Chrome.
+- The deployed GitHub Pages URL was loaded in Chrome after deployment, and the live menu, game
+  start, countdown, pause overlay and absence of the development-only engine hook were verified.
 
 The recorded QA runs produced **no page errors, no console errors/warnings and no failed network
 requests**. The optional QA scripts are in `scripts/` and require a running dev server plus a local
@@ -328,3 +359,5 @@ Chrome installation (Playwright supports the installed Chrome channel).
 ---
 
 **POPBOUND: ORB CHAOS** · v1.0 · built as a complete browser arcade game.
+
+[Play the live build on GitHub Pages →](https://hassanabni.github.io/popbound-orb-chaos/)
