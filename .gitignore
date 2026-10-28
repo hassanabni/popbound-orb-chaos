@@ -1,0 +1,10 @@
+node_modules/
+.npm-cache/
+.gh-cache/
+dist/
+.DS_Store
+*.local
+
+test-results/
+playwright-report/
+*.log
